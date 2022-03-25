@@ -189,4 +189,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\vertex_shader.vert" />
+    <None Include="shaders\frag_shader.frag" />
+    <None Include="shaders\light_shader.frag" />
+  </ItemGroup>
 </Project>

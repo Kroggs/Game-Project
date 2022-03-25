@@ -8,7 +8,7 @@ int main()
 {
 	Game game;
 	game.Init();
-
+	game.InitShaders();
 
 	while (game.IsRunning())
 	{ 

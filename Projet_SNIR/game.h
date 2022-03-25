@@ -4,6 +4,7 @@
 #include "levels.h"
 #include "text.h"
 #include "Gui.h"
+#include <filesystem>
 
 #include <memory>
 
@@ -14,6 +15,7 @@ public :
 	Game();
 
 	void Init();
+	void InitShaders();
 	void Update();
 	void Render();
 	void End();
@@ -27,6 +29,8 @@ private :
 	std::unique_ptr<sf::Event> m_EventHandler;
 	std::unique_ptr<sf::View> m_Camera;
 	std::unique_ptr<Map> m_Map;
+
+	sf::Shader m_LightShader;
 
 	std::vector<Gui> m_Gui;
 	std::unique_ptr<Item_Slot> g_Inventory;

@@ -33,6 +33,13 @@ void Game::Init()
 	this->m_PlayerController->SetRefSprite(this->g_LifeBar->GetSpritePtr());
 }
 
+void Game::InitShaders()
+{
+	std::cout << "Current path is " << std::filesystem::current_path() << '\n';
+	if (!this-m_LightShader.loadFromFile("light_shader.frag", sf::Shader::Fragment))
+		std::cout << "Error : could not load shaders" << std::endl;
+}
+
 void Game::Update()
 {
 	this->m_PlayerController->Update();
@@ -45,7 +52,7 @@ void Game::Render()
 	this->m_Map->RenderMainLayer(*this->m_Window.get());
 	this->m_Map->RenderSecondLayer(*this->m_Window.get());
 	
-	this->m_Window->draw(*this->m_PlayerController.get());
+	this->m_Window->draw(*this->m_PlayerController.get(), &m_LightShader);
 
 	this->m_Map->RenderThirdLayer(*this->m_Window.get());
 
