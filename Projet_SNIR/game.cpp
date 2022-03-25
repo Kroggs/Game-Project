@@ -58,6 +58,7 @@ void Game::Render()
 	this->m_Window->draw(*this->g_Inventory);
 	this->m_Window->draw(*this->g_LifeBar);
 	this->m_Window->draw(this->m_PlayerController->GetLifebar());
+	this->m_Window->draw(this->m_PlayerController->GetItemGui());
 
 	this->m_Window->display();
 }

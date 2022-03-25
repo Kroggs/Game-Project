@@ -27,13 +27,14 @@ public:
 	bool IsColliding();
 	bool IsBehindTile() const;
 	sf::Vector2f GetPosition() const;
-
+	
 	void AddItem(Item* item);
 	void DrawInventoryItems();
 	
 	void TakeDamage(const int amount);
 
 	sf::RectangleShape GetLifebar() const;
+	sf::RectangleShape GetItemGui() const;
 
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -42,7 +43,12 @@ private:
 
 	int m_Health, m_DamageRecieved;
 	bool m_IsDead, m_IsDamageAnimOver;
+	
 	std::vector<sf::Sprite*> m_SpriteRefs;
+
+	int m_EquippedItemIndex;
+	Item* m_EquippedItem;
+	sf::RectangleShape m_EquippedItemHighlight;
 
 	sf::Sprite m_Sprite, m_BlackSprite;
 	sf::Texture m_Texture, m_Texture_Black;

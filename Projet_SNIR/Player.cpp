@@ -46,9 +46,16 @@ Player::Player()
 	this->m_IsDead = false;
 	this->m_IsDamageAnimOver = true;
 
+	this->m_EquippedItemIndex = 0;
+	this->m_EquippedItem = nullptr;
+
 	this->m_LifeBar.setFillColor(sf::Color::Red);
 	this->m_LifeBar.setSize(sf::Vector2f(this->m_Health, 12));
 	this->m_LifeBar.setPosition(sf::Vector2f(92, 22));
+
+	this->m_EquippedItemHighlight.setFillColor(sf::Color(255, 240, 240, 100));
+	this->m_EquippedItemHighlight.setSize(sf::Vector2f(48, 48));
+	this->m_EquippedItemHighlight.setPosition(sf::Vector2f(350, 700));
 }
 
 void Player::SetCurrentMapLocation(Map* map)
@@ -109,6 +116,11 @@ void Player::SetView(sf::View* view, sf::RenderWindow* window)
 {
 	this->m_camera = view;
 	this->m_parentWindow = window;
+}
+
+sf::RectangleShape Player::GetItemGui() const
+{
+	return this->m_EquippedItemHighlight;
 }
 
 bool Player::IsColliding()
@@ -194,6 +206,33 @@ void Player::Update()
 		}
 	}
 
+	if (this->m_Inventory.size()) {
+		if (this->m_Inventory[this->m_EquippedItemIndex]) {
+			this->m_EquippedItem = this->m_Inventory[this->m_EquippedItemIndex];
+		}
+	}
+
+	float PosX = this->m_EquippedItemHighlight.getPosition().x - (this->m_EquippedItemIndex * 52.1);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1) && this->m_EquippedItemIndex != 0)
+		this->m_EquippedItemIndex = 0;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2) && this->m_EquippedItemIndex != 1)
+		this->m_EquippedItemIndex = 1;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3) && this->m_EquippedItemIndex != 2)
+		this->m_EquippedItemIndex = 2;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4) && this->m_EquippedItemIndex != 3)
+		this->m_EquippedItemIndex = 3;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5) && this->m_EquippedItemIndex != 4)
+		this->m_EquippedItemIndex = 4;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6) && this->m_EquippedItemIndex != 5)
+		this->m_EquippedItemIndex = 5;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num7) && this->m_EquippedItemIndex != 6)
+		this->m_EquippedItemIndex = 6;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8) && this->m_EquippedItemIndex != 7)
+		this->m_EquippedItemIndex = 7;
+
+	this->m_EquippedItemHighlight.setPosition(sf::Vector2f(PosX + (this->m_EquippedItemIndex * 52.1), this->m_EquippedItemHighlight.getPosition().y));
+
 	for (auto& item : this->m_Inventory)
 		item->Update();
 
@@ -240,6 +279,7 @@ void Player::Update()
 			for(auto& s : this->m_SpriteRefs)
 				s->move(0, -(this->m_CurrentSpeed));
 			this->m_LifeBar.move(0, -(this->m_CurrentSpeed));
+			this->m_EquippedItemHighlight.move(0, -(this->m_CurrentSpeed));
 			break;
 		case dir::DOWN:
 			this->m_Sprite.move(0, this->m_CurrentSpeed);
@@ -248,6 +288,7 @@ void Player::Update()
 			for (auto& s : this->m_SpriteRefs)
 				s->move(0, this->m_CurrentSpeed);
 			this->m_LifeBar.move(0, this->m_CurrentSpeed);
+			this->m_EquippedItemHighlight.move(0, this->m_CurrentSpeed);
 			break;
 		case dir::LEFT:
 			this->m_Sprite.move(-(this->m_CurrentSpeed), 0);
@@ -256,6 +297,7 @@ void Player::Update()
 			for (auto& s : this->m_SpriteRefs)
 				s->move(-(this->m_CurrentSpeed), 0);
 			this->m_LifeBar.move(-(this->m_CurrentSpeed), 0);
+			this->m_EquippedItemHighlight.move(-(this->m_CurrentSpeed), 0);
 			break;
 		case dir::RIGHT:
 			this->m_Sprite.move(this->m_CurrentSpeed, 0);
@@ -264,6 +306,7 @@ void Player::Update()
 			for (auto& s : this->m_SpriteRefs)
 				s->move(this->m_CurrentSpeed, 0);
 			this->m_LifeBar.move(this->m_CurrentSpeed, 0);
+			this->m_EquippedItemHighlight.move(this->m_CurrentSpeed, 0);
 			break;
 		}
 	}
