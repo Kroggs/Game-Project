@@ -4,18 +4,14 @@
 #include <Windows.h>
 
 
-int __stdcall wWinMain(
-	HINSTANCE instance,
-	HINSTANCE previousInstance,
-	PWSTR arguments,
-	int commandShow)
+int main()
 {
 	Game game;
 	game.Init();
 
 
 	while (game.IsRunning())
-	{
+	{ 
 		if (!game.IsClosed())
 		{
 			game.Update();
