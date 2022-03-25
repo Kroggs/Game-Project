@@ -31,4 +31,6 @@ inventory
 interactions (chests)
 draw a more suitable 1st map
 NPCs (salesman)
+Load Map from files
+Load map with chunks
 */
