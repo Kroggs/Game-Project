@@ -35,8 +35,7 @@ void Game::Init()
 
 void Game::InitShaders()
 {
-	std::cout << "Current path is " << std::filesystem::current_path() << '\n';
-	if (!this-m_LightShader.loadFromFile("light_shader.frag", sf::Shader::Fragment))
+	if (!this->m_LightShader.loadFromFile("shaders/light_shader.frag", sf::Shader::Fragment))
 		std::cout << "Error : could not load shaders" << std::endl;
 }
 
