@@ -2,16 +2,13 @@
 #include "utils.h"
 #include <iostream>
 #include <functional>
+#include <math.h>
 
 #include "levels.h"
 
 #define ROUND_2_INT(f) ((int)(f >= 0.0 ? (f + 0.5) : (f - 0.5)))
 
-void drawCollision(sf::RectangleShape& shape) {
-	shape.setFillColor(sf::Color(0, 0, 0, 0));
-	shape.setOutlineColor(sf::Color::Green);
-	shape.setOutlineThickness(1);
-}
+enum Layers{ FIRST = 0, SECOND = 1, THIRD = 2};
 
 Player::Player()
 {
@@ -33,6 +30,11 @@ Player::Player()
 	this->m_parentWindow = nullptr;
 	this->m_InventorySize = 8;
 	this->m_InventoryAmount = 0;
+
+	this->m_CollisionChecker.setFillColor(sf::Color(0, 0, 0, 0));
+	this->m_CollisionChecker.setOutlineColor(sf::Color::Green);
+	this->m_CollisionChecker.setSize(sf::Vector2f(32,32));
+	this->m_CollisionChecker.setOutlineThickness(1);
 
 	this->m_Sprite.setPosition(sf::Vector2f(550, 384));
 	this->m_BlackSprite.setPosition(sf::Vector2f(550, 384));
@@ -125,68 +127,58 @@ sf::RectangleShape Player::GetItemGui() const
 
 bool Player::IsColliding()
 {
+
 	LevelInformation CurrentMapInfos = this->m_CurrentMap->GetLevelInformations(this->m_CurrentMap->GetCurrentLevel());
 
 	sf::FloatRect bounds = sf::FloatRect(this->m_Sprite.getGlobalBounds().left + 9.0f, this->m_Sprite.getGlobalBounds().top + 9.0f, 15.0f, 23.0f);
-	int x = 0, y = 0;
+
+	sf::Vector2i PlayerTileCoords = sf::Vector2i(ROUND_2_INT(this->m_Sprite.getPosition().x / 32),
+											     ROUND_2_INT(this->m_Sprite.getPosition().y / 32));
+	int NextTile = 0;
+	int map_size = CurrentMapInfos.height * CurrentMapInfos.width;
 
 	switch (this->m_Anim.y) {
-		case dir::UP: bounds.top -= (bounds.height / 2); break;
-		case dir::DOWN: bounds.top += (bounds.height / 2); break;
-		case dir::LEFT: bounds.left -= (bounds.width / 2); break;
-		case dir::RIGHT: bounds.left += (bounds.width / 2); break;
+		case dir::UP: bounds.top -= (bounds.height / 2);
+			PlayerTileCoords.y--;
+			break;
+		case dir::DOWN: bounds.top += (bounds.height / 2); 
+			PlayerTileCoords.y++;
+			break;
+		case dir::LEFT: bounds.left -= (bounds.width / 2); 
+			PlayerTileCoords.x--;
+			break;
+		case dir::RIGHT: bounds.left += (bounds.width / 2); 
+			PlayerTileCoords.x++;
+			break;
 	}
 
-	tileCollisions.clear();
-	thirdLayerTiles.clear();
-
-	if (this->m_CurrentMap != nullptr && this->m_CurrentMap) {
-		for (unsigned int i = 0; i < CurrentMapInfos.layers; ++i) {
-			for (unsigned int x = 0; x < CurrentMapInfos.width; ++x) {
-				for (unsigned int y = 0; y < CurrentMapInfos.height; ++y) {
-					if (L::SPAWN_LAYER[i][x + y * CurrentMapInfos.width] > 0 && i + 1 == CurrentMapInfos.layers){
-						sf::RectangleShape thirdLayerTile(sf::Vector2f(32, 32));
-						thirdLayerTile.setPosition(sf::Vector2f(x * 32, y * 32));
-						drawCollision(thirdLayerTile);
-						thirdLayerTiles.push_back(thirdLayerTile);
-					}
-					for (unsigned int j = 0; j < CurrentMapInfos.collidableTiles.size(); ++j) {
-						if (L::SPAWN_LAYER[i][x + y * CurrentMapInfos.width] - 2 == CurrentMapInfos.collidableTiles[j]) {
-							sf::RectangleShape tileCollision(sf::Vector2f(32, 32));
-							tileCollision.setPosition(sf::Vector2f(x * 32, y * 32));
-							drawCollision(tileCollision);
-							tileCollisions.push_back(tileCollision);
-						}
-					}
-				}
+	for (unsigned int i = 0; i < CurrentMapInfos.layers; ++i) {
+		int NextTileId = L::SPAWN_LAYER[i][PlayerTileCoords.x + PlayerTileCoords.y * CurrentMapInfos.width] - 2; // tile ID of the tile forward the current player direction
+		for (unsigned int j = 0; j < CurrentMapInfos.collidableTiles.size(); j++) {
+			if (NextTileId == CurrentMapInfos.collidableTiles[j]) { // if the tile has collision
+				this->m_CollisionChecker.setPosition(sf::Vector2f(PlayerTileCoords.x * 32, PlayerTileCoords.y * 32));
 			}
 		}
 	}
+	
 
-		std::vector<Asset*> Assets = this->m_CurrentMap->GetAssets();
-		for (unsigned int i = 0; i < Assets.size(); i++){
-			if (Assets[i]->HasCollision()){
-				if (bounds.intersects(Assets[i]->GetSprite().getGlobalBounds()))
-					return true;
-			}
-		}
+	if (bounds.intersects(this->m_CollisionChecker.getGlobalBounds())) {
+		return true;
+	}
 
-		for (auto& tilecol : tileCollisions)
-			if (bounds.intersects(tilecol.getGlobalBounds()))
+
+	std::vector<Asset*> Assets = this->m_CurrentMap->GetAssets();
+	for (unsigned int i = 0; i < Assets.size(); i++){
+		if (Assets[i]->HasCollision()){
+			if (bounds.intersects(Assets[i]->GetSprite().getGlobalBounds()))
 				return true;
-
-		for (auto& col : this->thirdLayerTiles) {
-			if (bounds.intersects(col.getGlobalBounds())) {
-				this->m_isBehindTile = true;
-				break;
-			}	
-			else
-				this->m_isBehindTile = false;
 		}
-			
+	}
+
 
 	return false;
 }
+
 
 
 void Player::TakeDamage(const int amount)

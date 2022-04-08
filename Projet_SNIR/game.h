@@ -42,5 +42,6 @@ private :
 	bool m_IsRunning;
 	bool m_IsPaused;
 
+	bool m_DebugMode;
 	int m_FrameRateLimit;
 };

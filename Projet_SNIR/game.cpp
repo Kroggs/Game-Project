@@ -5,9 +5,6 @@ Game::Game()
 	this->m_Window = std::make_unique<sf::RenderWindow>();
 	this->m_EventHandler = std::make_unique<sf::Event>();
 	this->m_Camera = std::make_unique<sf::View>(sf::FloatRect(0, 0, 960, 768));
-	this->m_Map = std::make_unique<Map>();
-
-	this->m_PlayerController = std::make_unique<Player>();
 
 	this->m_IsPaused = false;
 	this->m_IsRunning = false;
@@ -22,6 +19,10 @@ Game::Game()
 void Game::Init()
 {
 	this->m_Window->create(sf::VideoMode(1290, 860), "SFML RPG");
+	
+	this->m_Map = std::make_unique<Map>();
+
+	this->m_PlayerController = std::make_unique<Player>();
 
 	this->m_Camera->setCenter(this->m_PlayerController->GetPosition());
 	this->m_PlayerController->SetCurrentMapLocation(this->m_Map.get());
@@ -65,6 +66,8 @@ void Game::Render()
 	this->m_Window->draw(*this->g_LifeBar);
 	this->m_Window->draw(this->m_PlayerController->GetLifebar());
 	this->m_Window->draw(this->m_PlayerController->GetItemGui());
+
+	this->m_PlayerController->DrawDebugAssets();
 
 	this->m_Window->display();
 }

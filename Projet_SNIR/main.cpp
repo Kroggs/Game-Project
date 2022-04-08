@@ -27,10 +27,18 @@ int main()
 }
 
 /*  TODO 
-inventory
-interactions (chests)
-draw a more suitable 1st map
-NPCs (salesman)
-Load Map from files
-Load map with chunks
+*
+
+//Optimisation
+	Load Map from file
+	Load map with chunks
+	Optimise Collision detection
+	remove LevelInformation struct & optimise map class
+
+
+//Gameplay
+	inventory
+	interactions (chests)
+	draw a more suitable 1st map
+	NPCs (salesman)
 */

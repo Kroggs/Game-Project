@@ -10,7 +10,7 @@ namespace dir
 }
 
 
-class Player : public sf::Drawable
+class Player : public sf::Drawable, public sf::Transformable
 {
 public:
 
@@ -36,10 +36,14 @@ public:
 	sf::RectangleShape GetLifebar() const;
 	sf::RectangleShape GetItemGui() const;
 
+	void DrawDebugAssets()
+	{
+		this->m_parentWindow->draw(this->m_CollisionChecker);
+	}
+
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	std::vector<sf::RectangleShape> tileCollisions, thirdLayerTiles;
-	sf::RectangleShape m_LifeBar;
+	sf::RectangleShape m_LifeBar, m_CollisionChecker;
 
 	int m_Health, m_DamageRecieved;
 	bool m_IsDead, m_IsDamageAnimOver;
