@@ -36,14 +36,9 @@ public:
 	sf::RectangleShape GetLifebar() const;
 	sf::RectangleShape GetItemGui() const;
 
-	void DrawDebugAssets()
-	{
-		this->m_parentWindow->draw(this->m_CollisionChecker);
-	}
-
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	sf::RectangleShape m_LifeBar, m_CollisionChecker;
+	sf::RectangleShape m_LifeBar, m_CollisionChecker, m_PlayerTileChecker;
 
 	int m_Health, m_DamageRecieved;
 	bool m_IsDead, m_IsDamageAnimOver;

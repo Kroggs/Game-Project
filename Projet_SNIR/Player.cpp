@@ -31,10 +31,8 @@ Player::Player()
 	this->m_InventorySize = 8;
 	this->m_InventoryAmount = 0;
 
-	this->m_CollisionChecker.setFillColor(sf::Color(0, 0, 0, 0));
-	this->m_CollisionChecker.setOutlineColor(sf::Color::Green);
 	this->m_CollisionChecker.setSize(sf::Vector2f(32,32));
-	this->m_CollisionChecker.setOutlineThickness(1);
+	this->m_PlayerTileChecker.setSize(sf::Vector2f(32, 32));
 
 	this->m_Sprite.setPosition(sf::Vector2f(550, 384));
 	this->m_BlackSprite.setPosition(sf::Vector2f(550, 384));
@@ -133,7 +131,10 @@ bool Player::IsColliding()
 	sf::FloatRect bounds = sf::FloatRect(this->m_Sprite.getGlobalBounds().left + 9.0f, this->m_Sprite.getGlobalBounds().top + 9.0f, 15.0f, 23.0f);
 
 	sf::Vector2i PlayerTileCoords = sf::Vector2i(ROUND_2_INT(this->m_Sprite.getPosition().x / 32),
-											     ROUND_2_INT(this->m_Sprite.getPosition().y / 32));
+											     ROUND_2_INT((this->m_Sprite.getPosition().y + 16) / 32));
+
+	this->m_PlayerTileChecker.setPosition(PlayerTileCoords.x * 32, PlayerTileCoords.y * 32);
+
 	int NextTile = 0;
 	int map_size = CurrentMapInfos.height * CurrentMapInfos.width;
 
