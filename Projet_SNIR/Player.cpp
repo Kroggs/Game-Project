@@ -133,6 +133,11 @@ bool Player::IsColliding()
 	sf::Vector2i PlayerTileCoords = sf::Vector2i(ROUND_2_INT(this->m_Sprite.getPosition().x / 32),
 											     ROUND_2_INT((this->m_Sprite.getPosition().y + 16) / 32));
 
+	if (L::SPAWN_LAYER[2][PlayerTileCoords.x + PlayerTileCoords.y * CurrentMapInfos.width] > 0)
+		this->m_isBehindTile = true;
+	else
+		this->m_isBehindTile = false;
+
 	this->m_PlayerTileChecker.setPosition(PlayerTileCoords.x * 32, PlayerTileCoords.y * 32);
 
 	int NextTile = 0;
