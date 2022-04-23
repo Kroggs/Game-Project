@@ -12,6 +12,8 @@ enum Layers{ FIRST = 0, SECOND = 1, THIRD = 2};
 
 Player::Player()
 {
+	this->m_Username = "Guest";
+
 	if (!this->m_Texture.loadFromFile("images/characters/main_character.png"))
 		std::cerr << "Error while loading player texture" << std::endl;
 	if (!this->m_Texture_Black.loadFromFile("images/characters/main_character_black.png"))
@@ -185,7 +187,10 @@ bool Player::IsColliding()
 	return false;
 }
 
-
+std::string Player::GetUsername() const
+{
+	return this->m_Username;
+}
 
 void Player::TakeDamage(const int amount)
 {

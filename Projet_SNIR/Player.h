@@ -36,9 +36,13 @@ public:
 	sf::RectangleShape GetLifebar() const;
 	sf::RectangleShape GetItemGui() const;
 
+	std::string GetUsername() const;
+
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	sf::RectangleShape m_LifeBar, m_CollisionChecker, m_PlayerTileChecker;
+
+	std::string m_Username;
 
 	int m_Health, m_DamageRecieved;
 	bool m_IsDead, m_IsDamageAnimOver;

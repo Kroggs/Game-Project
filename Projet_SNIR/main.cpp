@@ -2,7 +2,7 @@
 
 #include "game.h"
 #include <Windows.h>
-
+#include <SFML/Network.hpp>
 
 int main()
 {
