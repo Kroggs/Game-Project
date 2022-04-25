@@ -41,4 +41,7 @@ int main()
 	interactions (chests)
 	draw a more suitable 1st map
 	NPCs (salesman)
+
+//Network
+	client -> queryServer -> parsePlayerList -> getPositions
 */
