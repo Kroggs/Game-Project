@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 struct LevelInformation
 {
@@ -71,6 +72,7 @@ private:
     std::vector<TileMap> m_TileMap;
     std::vector<int> m_CollidableTiles;
     TileMap m_spawn_l1, m_spawn_l2;
+    sf::Music music;
 
     int m_currentLevel, m_previousLevel, m_mapWidth, m_mapHeight;
 };

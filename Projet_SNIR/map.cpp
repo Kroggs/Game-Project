@@ -55,6 +55,13 @@ Map::Map()
     this->m_mapWidth = 0;
     this->m_mapHeight = 0;
 
+    if (this->music.openFromFile("sounds/song.ogg")) {
+        this->music.play();
+        this->music.setLoop(true);
+        this->music.setVolume(10);
+    }
+    
+
     ChangeLevel(SPAWN);
 }
 

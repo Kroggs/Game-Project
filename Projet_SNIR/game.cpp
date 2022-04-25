@@ -34,7 +34,7 @@ void Game::Init()
 	this->m_PlayerController->SetRefSprite(this->g_Inventory->GetSpritePtr());
 	this->m_PlayerController->SetRefSprite(this->g_LifeBar->GetSpritePtr());
 
-	netw::send(strcat((char*)this->m_PlayerController->GetUsername().c_str(), " joined the game."));
+	netw::sendMsg(strcat((char*)this->m_PlayerController->GetUsername().c_str(), " joined the game."));
 }
 
 void Game::InitShaders()
