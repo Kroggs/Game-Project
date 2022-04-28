@@ -34,7 +34,10 @@ void Game::Init()
 	this->m_PlayerController->SetRefSprite(this->g_Inventory->GetSpritePtr());
 	this->m_PlayerController->SetRefSprite(this->g_LifeBar->GetSpritePtr());
 
-	netw::sendMsg(strcat((char*)this->m_PlayerController->GetUsername().c_str(), " joined the game."));
+	netw::init();
+
+	netw::sendMsg(strcat((char*)this->m_PlayerController->GetUsername().c_str(), " joined the game.\n"));
+	netw::getPlayerAmount();
 }
 
 void Game::InitShaders()
@@ -46,6 +49,9 @@ void Game::InitShaders()
 void Game::Update()
 {
 	this->m_PlayerController->Update();
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		this->m_PlayerController->TakeDamage(1);
+	}
 }
 
 void Game::Render()
@@ -75,6 +81,7 @@ void Game::Render()
 
 void Game::End()
 {
+	netw::closeConnextion();
 	this->m_Window->close();
 }
 

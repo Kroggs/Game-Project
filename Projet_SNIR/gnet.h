@@ -2,12 +2,28 @@
 #include <SFML/Network.hpp>
 #include <cstring>
 
+void Listener()
+{
+
+}
+
 
 namespace netw
 {
-	enum Events{ CHATLOG };
+	enum Events{ CHATLOG};
 	sf::TcpSocket socket;
-	sf::Socket::Status status = socket.connect("127.0.0.1", 8080);
+	sf::TcpListener listener;
+	sf::Socket::Status status;
+
+	void init()
+	{
+		status = socket.connect("127.0.0.1", 8080);
+	}
+
+	void closeConnextion()
+	{
+		socket.disconnect();
+	}
 
 	bool sendMsg(char* data)
 	{
@@ -31,5 +47,31 @@ namespace netw
 				
 			break;
 		}
+	}
+
+	int getPlayerAmount()
+	{
+		char buffer[100];
+		std::size_t received;
+
+		if (status == sf::Socket::Done)
+		if (socket.send((char*)"GETPLAYERAMOUNT\n", 0x0F) != sf::Socket::Done)
+			return false;
+		else return false;
+
+		if (listener.listen(8080) == sf::Socket::Done)
+		{
+			if (socket.receive(buffer, 100, received) != sf::Socket::Done)
+				return 0;
+			else {
+				std::cout << "Received " << received << " bytes" << std::endl;
+			}
+		}
+		else return 0;
+	}
+
+	bool getPlayer(const int index)
+	{
+		return 0;
 	}
 }
