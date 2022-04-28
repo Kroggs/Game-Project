@@ -36,8 +36,7 @@ void Game::Init()
 
 	netw::init();
 
-	netw::sendMsg(strcat((char*)this->m_PlayerController->GetUsername().c_str(), " joined the game.\n"));
-	netw::getPlayerAmount();
+	netw::sendPlayerPacket(this->m_PlayerController->GetPosition(), this->m_PlayerController->GetUsername(), this->m_PlayerController->getUid());
 }
 
 void Game::InitShaders()

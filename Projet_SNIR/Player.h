@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+
 #include "assets.h"
 #include "item.h"
 
@@ -8,7 +10,6 @@ namespace dir
 {
 	enum dir{DOWN, LEFT, RIGHT, UP};
 }
-
 
 class Player : public sf::Drawable, public sf::Transformable
 {
@@ -36,6 +37,8 @@ public:
 	sf::RectangleShape GetLifebar() const;
 	sf::RectangleShape GetItemGui() const;
 
+	int getUid() const;
+
 	std::string GetUsername() const;
 
 private:
@@ -45,6 +48,7 @@ private:
 	std::string m_Username;
 
 	int m_Health, m_DamageRecieved;
+	int m_Uid;
 	bool m_IsDead, m_IsDamageAnimOver;
 	
 	std::vector<sf::Sprite*> m_SpriteRefs;

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <functional>
 #include <math.h>
+#include <cstdlib>
 
 #include "levels.h"
 
@@ -35,6 +36,8 @@ Player::Player()
 
 	this->m_CollisionChecker.setSize(sf::Vector2f(32,32));
 	this->m_PlayerTileChecker.setSize(sf::Vector2f(32, 32));
+
+	this->m_Uid = rand() % 0xFFFFFFFF;
 
 	this->m_Sprite.setPosition(sf::Vector2f(550, 384));
 	this->m_BlackSprite.setPosition(sf::Vector2f(550, 384));
@@ -118,6 +121,11 @@ void Player::SetView(sf::View* view, sf::RenderWindow* window)
 {
 	this->m_camera = view;
 	this->m_parentWindow = window;
+}
+
+int Player::getUid() const
+{
+	return this->m_Uid;
 }
 
 sf::RectangleShape Player::GetItemGui() const

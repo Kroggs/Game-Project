@@ -1,12 +1,7 @@
 #pragma once
 #include <SFML/Network.hpp>
-#include <cstring>
 
-void Listener()
-{
-
-}
-
+enum PacketType{PLAYER = 0};
 
 namespace netw
 {
@@ -25,53 +20,10 @@ namespace netw
 		socket.disconnect();
 	}
 
-	bool sendMsg(char* data)
+	void sendPlayerPacket(sf::Vector2f pos, std::string name, int uid)
 	{
-		if (status == sf::Socket::Done)
-			if (socket.send(data, strlen(data)) != sf::Socket::Done)
-				return false;
-		else return false;
-	}
-
-	bool sendEvent(auto EventType, char* data)
-	{
-		switch (EventType)
-		{
-		case CHATLOG:
-			if (status == sf::Socket::Done) {
-				char* msg = strcat((char*)"CLOG", data);
-				if (socket.send(msg, strlen(msg)) != sf::Socket::Done)
-					return false;
-				else return false;
-			}
-				
-			break;
-		}
-	}
-
-	int getPlayerAmount()
-	{
-		char buffer[100];
-		std::size_t received;
-
-		if (status == sf::Socket::Done)
-		if (socket.send((char*)"GETPLAYERAMOUNT\n", 0x0F) != sf::Socket::Done)
-			return false;
-		else return false;
-
-		if (listener.listen(8080) == sf::Socket::Done)
-		{
-			if (socket.receive(buffer, 100, received) != sf::Socket::Done)
-				return 0;
-			else {
-				std::cout << "Received " << received << " bytes" << std::endl;
-			}
-		}
-		else return 0;
-	}
-
-	bool getPlayer(const int index)
-	{
-		return 0;
+		sf::Packet packet;
+		packet << static_cast<int>(PLAYER) << pos.x << pos.y << name << uid;
+		socket.send(packet);
 	}
 }
