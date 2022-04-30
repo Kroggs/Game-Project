@@ -16,12 +16,12 @@ namespace netw
 
 	int getPlayerAmount()
 	{
-		int playerAmount = 0xDEADBEEF;
+		int playerAmount = 0;
 		sf::Packet packet, packetResponse;
 		packet << static_cast<int>(PLAYERAMOUNT);
 		if (socket.send(packet) != sf::Socket::Done)
 			return false;
-		while (playerAmount == 0xDEADBEEF) {
+		while (!playerAmount) {
 			if (socket.receive(packetResponse) == sf::Socket::Done) {
 				int pType; packetResponse >> pType;
 				if (pType == PLARESPONSE) {
