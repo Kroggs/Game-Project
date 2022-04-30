@@ -20,6 +20,7 @@ Game::Game()
 
 void Game::Init()
 {
+	srand(time(NULL));
 	this->m_Window->create(sf::VideoMode(1290, 860), "SFML RPG");
 	
 	this->m_Map = std::make_unique<Map>();
@@ -38,8 +39,20 @@ void Game::Init()
 	netw::init();
 
 	netw::joinServer(this->m_PlayerController->getPlayerStruct());
+}
 
-	std::cout << "Player amount : " << netw::getPlayerAmount() << std::endl;
+void Game::NetInit()
+{
+	for (unsigned int i = 0; i < netw::getPlayerAmount(); i++) {
+		int targetUid = 0;
+		if (netw::getPlayerUid(i, this->m_PlayerController->getUid(), targetUid) != 0) {
+			EPlayer currentPlayer = netw::getPlayerByUid(targetUid);
+			if (currentPlayer.uid == targetUid) {
+				this->m_netPlayers.push_back(currentPlayer);
+				std::cout << currentPlayer.name << " added to player list." << std::endl;
+			}
+		}
+	}
 }
 
 void Game::InitShaders()
@@ -71,7 +84,6 @@ void Game::NetUpdate()
 			if (packetType == PLAYERJOINRESPONSE) {
 				EPlayer netpStruct;
 				this->m_netPacket >> netpStruct;
-				std::cout << netpStruct.name << " player joined the game ! let's go !" << std::endl;
 				this->m_netPlayers.push_back(netpStruct);
 			}
 

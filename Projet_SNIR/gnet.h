@@ -3,7 +3,7 @@
 #include "eplayer_struct.h"
 
 enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3, PLAYERPOS = 4, PLAPOSRESPONSE = 5, PLAYERUPDATE = 6,
-	              PLAYERJOINRESPONSE = 7
+	              PLAYERJOINRESPONSE = 7, GETPLAYERUID = 8, GETPLAYER = 9
 };
 
 sf::Packet& operator >>(sf::Packet& packet, EPlayer& character)
@@ -75,5 +75,47 @@ namespace netw
 		if (socket.receive(packet) == sf::Socket::Done) {
 			return true;
 		}
+	}
+
+	int getPlayerUid(const int index, const int uid, int& target)
+	{
+		sf::Packet packet, packetResponse;
+		packet << static_cast<int>(GETPLAYERUID) << index;
+		socket.send(packet);
+		int pUid = 0; bool done = false; 
+		while (!done) {
+			if (socket.receive(packetResponse) == sf::Socket::Done) {
+				done = true;
+				packetResponse >> pUid;
+				if (pUid == uid)
+					return 0;
+				else {
+					target = pUid;
+					return pUid;
+				}
+					
+			}
+		}
+
+		return 0;
+	}
+
+	EPlayer getPlayerByUid(const int uid)
+	{
+		sf::Packet packet, packetResponse;
+		packet << static_cast<int>(GETPLAYER) << uid;
+		socket.send(packet);
+		EPlayer dummyPlayer{ 0, 0, 0, 0, 0, 0, "dummy", 0, 0, 0 };
+		EPlayer player = dummyPlayer; bool done = false;
+		while (!done) {
+			if (socket.receive(packetResponse) == sf::Socket::Done) {
+				done = true;
+				packetResponse >> player;
+				if (player.uid != uid)
+					std::cout << "No player found with this uid...";
+			}
+		}
+
+		return player;
 	}
 }

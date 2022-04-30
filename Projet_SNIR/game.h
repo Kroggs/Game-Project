@@ -5,6 +5,7 @@
 #include "text.h"
 #include "Gui.h"
 #include <filesystem>
+#include <cstdlib>
 
 #include <memory>
 #include <SFML/Network.hpp>
@@ -17,6 +18,7 @@ public :
 	Game();
 
 	void Init();
+	void NetInit();
 	void InitShaders();
 	void Update();
 	void NetUpdate();

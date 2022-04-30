@@ -4,7 +4,7 @@
 
 NetPlayer::NetPlayer()
 {
-
+	srand(time(NULL));
 	if (!this->PTexture.loadFromFile("images/characters/main_character.png"))
 		std::cerr << "Couldn\'t load Player Texture." << std::endl;
 	if (!this->PBlackTexture.loadFromFile("images/characters/main_character_black.png"))

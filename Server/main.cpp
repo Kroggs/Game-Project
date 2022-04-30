@@ -3,7 +3,8 @@
 #include <iostream>
 
 enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3, PLAYERPOS = 4, PLAPOSRESPONSE = 5, PLAYERUPDATE = 6,
-                  PLAYERJOINRESPONSE = 7};
+                  PLAYERJOINRESPONSE = 7, GETPLAYERUID = 8, GETPLAYER = 9
+};
 
 struct Player
 {
@@ -12,7 +13,7 @@ struct Player
     bool isMoving, isBehindTile;
     std::string name;
     int uid, animx, animy;
-};
+}; Player dummyPlayer{PLAYER, 0, 0, 0, 0, 0, "dummy", 0, 0, 0};
 
 sf::Packet& operator >>(sf::Packet& packet, Player& character)
 {
@@ -111,12 +112,36 @@ int main()
                                         if (pIt->uid == p.uid)
                                             *pIt = p;
                                 }
+                                else if (packetType == GETPLAYERUID) {
+                                    int index = 0;
+                                    packet >> index;
+                                    int uid = Clients[index].uid;
+                                    sf::Packet sPacket; sPacket << uid;
+                                    client.send(sPacket);
+                                }
+                                else if (packetType == GETPLAYER) {
+                                    int uid = 0;
+                                    packet >> uid;
+                                    Player pReturn = dummyPlayer;
+                                    for (auto& player : Clients) {
+                                        if (player.uid == uid) {
+                                            pReturn = player;
+                                        }
+                                    }
+                                    sf::Packet returnPacket;
+                                    returnPacket << pReturn;
+                                    client.send(returnPacket);
+                                }
                             } 
                         }
                     }
                 }
             }
         }
+    }
+
+    for (auto* socket : clients) {
+        delete socket;
     }
 
     return 0;
