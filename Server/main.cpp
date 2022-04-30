@@ -2,7 +2,7 @@
 #include <list>
 #include <iostream>
 
-enum PacketType { PLAYER = 0 };
+enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3};
 
 struct Player
 {
@@ -40,7 +40,7 @@ int main()
                 sf::TcpSocket* client = new sf::TcpSocket;
                 if (listener.accept(*client) == sf::Socket::Done)
                 {
-                    std::cout << "New client : " << client->getRemoteAddress() << std::endl;
+                    //std::cout << "New client : " << client->getRemoteAddress() << std::endl;
                     clients.push_back(client);
                     selector.add(*client);
                 }
@@ -59,7 +59,6 @@ int main()
                         sf::Packet packet;
                         if (client.receive(packet) == sf::Socket::Done)
                         {
-                            std::cout << "Packet received" << std::endl;
                             int packetType = 0;
                             if (packet >> packetType) {
                                 if (packetType == PLAYER) {
@@ -72,8 +71,26 @@ int main()
                                     }
                                     if (!alreadyExists) {
                                         Clients.push_back(p);
-                                        std::cout << p.name << " added to player list." << std::endl;
+                                        std::cout << p.name << " joined." << std::endl;
                                     }
+                                }
+                                else if (packetType == PLAYERDC) {
+                                    int UID; packet >> UID;
+                                    for (std::vector<Player>::iterator pIt = Clients.begin(); pIt != Clients.end();) {
+                                        if (pIt->uid == UID) {
+                                            std::cout << pIt->name << " disconnected." << std::endl;
+                                            pIt = Clients.erase(pIt);
+                                        }
+                                        else {
+                                            ++pIt;
+                                        }
+                                    }
+                                }
+                                else if (packetType == PLAYERAMOUNT) {
+                                    int playerAmount = Clients.size();
+                                    sf::Packet packet;
+                                    packet << PLARESPONSE << playerAmount;
+                                    client.send(packet);
                                 }
                             } 
                         }

@@ -37,6 +37,8 @@ void Game::Init()
 	netw::init();
 
 	netw::sendPlayerPacket(this->m_PlayerController->GetPosition(), this->m_PlayerController->GetUsername(), this->m_PlayerController->getUid());
+
+	std::cout << "Player amount : " << netw::getPlayerAmount() << std::endl;
 }
 
 void Game::InitShaders()
@@ -52,6 +54,7 @@ void Game::Update()
 		this->m_PlayerController->TakeDamage(1);
 	}
 }
+
 
 void Game::Render()
 {
@@ -80,7 +83,7 @@ void Game::Render()
 
 void Game::End()
 {
-	netw::closeConnextion();
+	netw::closeConnextion(this->m_PlayerController->getUid());
 	this->m_Window->close();
 }
 
