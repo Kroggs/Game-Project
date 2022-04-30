@@ -2,19 +2,26 @@
 #include <list>
 #include <iostream>
 
-enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3};
+enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3, PLAYERPOS = 4, PLAPOSRESPONSE = 5, PLAYERUPDATE = 6,
+                  PLAYERJOINRESPONSE = 7};
 
 struct Player
 {
     int packetType;
-    float posx, posy;
+    float posx, posy, speed;
+    bool isMoving, isBehindTile;
     std::string name;
-    int uid;
+    int uid, animx, animy;
 };
 
 sf::Packet& operator >>(sf::Packet& packet, Player& character)
 {
-    return packet >> character.posx >> character.posy >> character.name >> character.uid;
+    return packet >> character.posx >> character.posy >> character.speed >> character.isMoving >> character.isBehindTile >> character.name >> character.uid >> character.animx >> character.animy;
+}
+
+sf::Packet& operator << (sf::Packet& packet, Player& character)
+{
+    return packet << character.posx << character.posy << character.speed << character.isMoving << character.isBehindTile << character.name << character.uid << character.animx << character.animy;
 }
 
 int main()
@@ -40,7 +47,7 @@ int main()
                 sf::TcpSocket* client = new sf::TcpSocket;
                 if (listener.accept(*client) == sf::Socket::Done)
                 {
-                    //std::cout << "New client : " << client->getRemoteAddress() << std::endl;
+                    std::cout << "New client : " << client->getRemoteAddress() << std::endl;
                     clients.push_back(client);
                     selector.add(*client);
                 }
@@ -72,6 +79,12 @@ int main()
                                     if (!alreadyExists) {
                                         Clients.push_back(p);
                                         std::cout << p.name << " joined." << std::endl;
+                                        sf::Packet broadcast_pjoin;
+                                        broadcast_pjoin << static_cast<int>(PLAYERJOINRESPONSE) << p;
+                                        for (std::list<sf::TcpSocket*>::iterator pIt = clients.begin(); pIt != clients.end(); ++pIt) {      
+                                            if (pIt != it)
+                                                reinterpret_cast<sf::TcpSocket&>(**pIt).send(broadcast_pjoin);
+                                        }
                                     }
                                 }
                                 else if (packetType == PLAYERDC) {
@@ -91,6 +104,12 @@ int main()
                                     sf::Packet packet;
                                     packet << PLARESPONSE << playerAmount;
                                     client.send(packet);
+                                }
+                                else if (packetType == PLAYERUPDATE) {
+                                    Player p; packet >> p;
+                                    for (std::vector<Player>::iterator pIt = Clients.begin(); pIt != Clients.end(); ++pIt)
+                                        if (pIt->uid == p.uid)
+                                            *pIt = p;
                                 }
                             } 
                         }

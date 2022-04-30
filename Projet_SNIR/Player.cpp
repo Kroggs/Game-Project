@@ -133,6 +133,18 @@ sf::RectangleShape Player::GetItemGui() const
 	return this->m_EquippedItemHighlight;
 }
 
+EPlayer Player::getPlayerStruct()
+{
+	return EPlayer{
+		static_cast<int>(6),
+		this->GetPosition().x, this->GetPosition().y,
+		this->m_CurrentSpeed,
+		this->m_IsMoving, this->m_isBehindTile,
+		this->m_Username, this->m_Uid,
+		this->m_Anim.x, this->m_Anim.y
+	};
+}
+
 bool Player::IsColliding()
 {
 
@@ -339,6 +351,7 @@ void Player::Update()
 
 	this->m_LifeBar.setSize(sf::Vector2f(this->m_Health, 12));
 }
+
 
 void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {

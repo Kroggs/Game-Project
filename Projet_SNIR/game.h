@@ -7,6 +7,8 @@
 #include <filesystem>
 
 #include <memory>
+#include <SFML/Network.hpp>
+#include "eplayer_struct.h"
 
 class Game
 {
@@ -17,6 +19,7 @@ public :
 	void Init();
 	void InitShaders();
 	void Update();
+	void NetUpdate();
 	void Render();
 	void End();
 	
@@ -38,6 +41,10 @@ private :
 
 	std::unique_ptr<Player> m_PlayerController;
 	std::vector<Item> m_PickupItems;
+
+	sf::Clock m_netClock;
+	sf::Packet m_netPacket;
+	std::vector<EPlayer> m_netPlayers;
 
 	bool m_IsRunning;
 	bool m_IsPaused;

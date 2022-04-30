@@ -1,7 +1,20 @@
 #pragma once
 #include <SFML/Network.hpp>
+#include "eplayer_struct.h"
 
-enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3 };
+enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3, PLAYERPOS = 4, PLAPOSRESPONSE = 5, PLAYERUPDATE = 6,
+	              PLAYERJOINRESPONSE = 7
+};
+
+sf::Packet& operator >>(sf::Packet& packet, EPlayer& character)
+{
+	return packet >> character.posx >> character.posy >> character.speed >> character.isMoving >> character.isBehindTile >> character.name >> character.uid >> character.animx >> character.animy;
+}
+
+sf::Packet& operator << (sf::Packet& packet, EPlayer& character)
+{
+	return packet << character.posx << character.posy << character.speed << character.isMoving << character.isBehindTile << character.name << character.uid << character.animx << character.animy;
+}
 
 namespace netw
 {
@@ -20,7 +33,7 @@ namespace netw
 		sf::Packet packet, packetResponse;
 		packet << static_cast<int>(PLAYERAMOUNT);
 		if (socket.send(packet) != sf::Socket::Done)
-			return false;
+			throw std::runtime_error("Unable to send packet.");
 		while (!playerAmount) {
 			if (socket.receive(packetResponse) == sf::Socket::Done) {
 				int pType; packetResponse >> pType;
@@ -37,6 +50,10 @@ namespace netw
 		return playerAmount;
 	}
 
+	void sendPacket(sf::Packet& packet) {
+		socket.send(packet);
+	}
+
 	void closeConnextion(int uid)
 	{
 		sf::Packet packet;
@@ -46,10 +63,17 @@ namespace netw
 		socket.disconnect();
 	}
 
-	void sendPlayerPacket(sf::Vector2f pos, std::string name, int uid)
+	void joinServer(EPlayer p)
 	{
 		sf::Packet packet;
-		packet << static_cast<int>(PLAYER) << pos.x << pos.y << name << uid;
+		packet << static_cast<int>(PLAYER) << p;
 		socket.send(packet);
+	}
+
+	bool getPacket(sf::Packet& packet)
+	{
+		if (socket.receive(packet) == sf::Socket::Done) {
+			return true;
+		}
 	}
 }

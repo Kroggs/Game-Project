@@ -155,6 +155,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mob.cpp" />
+    <ClCompile Include="netplayer.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="text.cpp" />
   </ItemGroup>
@@ -186,6 +187,7 @@
     <ClInclude Include="debug-gui\imstb_truetype.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="Gui.h" />
+    <ClInclude Include="eplayer_struct.h" />
     <ClInclude Include="imgui\imgui_impl_allegro5.h" />
     <ClInclude Include="imgui\imgui_impl_android.h" />
     <ClInclude Include="imgui\imgui_impl_dx10.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="map.h" />
     <ClInclude Include="mob.h" />
     <ClInclude Include="gnet.h" />
+    <ClInclude Include="netplayer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="utils.h" />

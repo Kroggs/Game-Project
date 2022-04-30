@@ -1,6 +1,7 @@
 #include "game.h"
 #include "gnet.h"
 
+
 Game::Game()
 {
 	this->m_Window = std::make_unique<sf::RenderWindow>();
@@ -36,7 +37,7 @@ void Game::Init()
 
 	netw::init();
 
-	netw::sendPlayerPacket(this->m_PlayerController->GetPosition(), this->m_PlayerController->GetUsername(), this->m_PlayerController->getUid());
+	netw::joinServer(this->m_PlayerController->getPlayerStruct());
 
 	std::cout << "Player amount : " << netw::getPlayerAmount() << std::endl;
 }
@@ -52,6 +53,34 @@ void Game::Update()
 	this->m_PlayerController->Update();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		this->m_PlayerController->TakeDamage(1);
+	}
+
+}
+
+void Game::NetUpdate()
+{
+	if (this->m_netClock.getElapsedTime().asMilliseconds() >= 50) {
+		sf::Packet packet;
+		EPlayer pStruct = this->m_PlayerController->getPlayerStruct();
+		packet << pStruct;
+		netw::sendPacket(packet);
+
+		if (netw::getPacket(this->m_netPacket)) {
+			int packetType = 0xFF;
+			this->m_netPacket >> packetType;
+			if (packetType == PLAYERJOINRESPONSE) {
+				EPlayer netpStruct;
+				this->m_netPacket >> netpStruct;
+				std::cout << netpStruct.name << " player joined the game ! let's go !" << std::endl;
+				this->m_netPlayers.push_back(netpStruct);
+			}
+
+			this->m_netPacket.clear();
+		}
+
+
+
+		this->m_netClock.restart();
 	}
 }
 

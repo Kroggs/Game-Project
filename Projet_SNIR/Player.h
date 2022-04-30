@@ -5,6 +5,7 @@
 
 #include "assets.h"
 #include "item.h"
+#include "eplayer_struct.h"
 
 namespace dir
 {
@@ -38,6 +39,8 @@ public:
 	sf::RectangleShape GetItemGui() const;
 
 	int getUid() const;
+
+	EPlayer getPlayerStruct();
 
 	std::string GetUsername() const;
 
