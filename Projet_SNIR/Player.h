@@ -82,4 +82,5 @@ private:
 	float fpsCount,
 		  switchFps,
 		  fpsSpeed;
+
 };

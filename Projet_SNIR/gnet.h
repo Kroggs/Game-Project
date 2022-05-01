@@ -3,7 +3,7 @@
 #include "eplayer_struct.h"
 
 enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3, PLAYERPOS = 4, PLAPOSRESPONSE = 5, PLAYERUPDATE = 6,
-	              PLAYERJOINRESPONSE = 7, GETPLAYERUID = 8, GETPLAYER = 9
+	              PLAYERJOINRESPONSE = 7, GETPLAYERUID = 8, GETPLAYER = 9, PLAYERUPDATERESPONSE = 10
 };
 
 sf::Packet& operator >>(sf::Packet& packet, EPlayer& character)
@@ -21,9 +21,12 @@ namespace netw
 	sf::TcpSocket socket;
 	sf::TcpListener listener;
 	sf::Socket::Status status;
+	
 
 	void init()
 	{
+		listener.setBlocking(false);
+		socket.setBlocking(false);
 		status = socket.connect("127.0.0.1", 8080);
 	}
 
@@ -50,7 +53,7 @@ namespace netw
 		return playerAmount;
 	}
 
-	void sendPacket(sf::Packet& packet) {
+	void sendPacket(sf::Packet packet) {
 		socket.send(packet);
 	}
 

@@ -11,15 +11,20 @@ int main()
 	game.NetInit();
 	game.InitShaders();
 
+
+	sf::Thread netUpdateThread(&Game::NetUpdate, &game);
+
 	while (game.IsRunning())
 	{ 
 		if (!game.IsClosed())
 		{
+			netUpdateThread.launch();
 			game.Update();
 			game.Render();
 		}
 		else
 		{
+			netUpdateThread.terminate();
 			game.End();
 		}
 	}

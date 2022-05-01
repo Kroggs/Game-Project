@@ -18,8 +18,10 @@ NetPlayer::NetPlayer()
 	this->PSprite.setTexture(this->PTexture);
 	this->PBlackSprite.setTexture(this->PBlackTexture);
 
-	this->PAnim = sf::Vector2i(0, dir::DOWN);
+	this->PAnim = sf::Vector2i(0, ndir::nDOWN);
 	this->Username = "Guest";
+
+	this->Position = sf::Vector2f(0.0f, 0.0f);
 
 	this->CurrentSpeed = 0;
 	this->Acceleration = 0.05f;
@@ -37,9 +39,33 @@ NetPlayer::NetPlayer()
 
 }
 
+void NetPlayer::AssignStruct(EPlayer eplayer)
+{
+	this->Position = sf::Vector2f(eplayer.posx, eplayer.posy);
+	this->CurrentSpeed = eplayer.speed;
+	this->IsMoving = eplayer.isMoving;
+	this->PIsBehindTile = eplayer.isBehindTile;
+	this->Username = eplayer.name;
+	this->UID = eplayer.uid;
+	this->PAnim.x = eplayer.animx;
+	this->PAnim.y = eplayer.animy;
+}
+
 void NetPlayer::Update()
 {
+	FpsCount += FpsSpeed * Time.restart().asSeconds();
 
+	if (FpsCount >= SwitchFps)
+	{
+		if (this->TimeSinceLastMove.getElapsedTime().asMilliseconds() < 500)
+			this->PAnim.x++;
+		if (this->PAnim.x * 32 >= this->PTexture.getSize().x || this->TimeSinceLastMove.getElapsedTime().asMilliseconds() > 500)
+			this->PAnim.x = 0;
+		FpsCount = 0;
+	}
+
+	this->PBlackSprite.setTextureRect(sf::IntRect((this->PAnim.x * 32), (this->PAnim.y * 32), 32, 32));
+	this->PSprite.setTextureRect(sf::IntRect((this->PAnim.x * 32), (this->PAnim.y * 32), 32, 32));
 }
 
 void NetPlayer::SetCurrentMapLocation(Map* map)

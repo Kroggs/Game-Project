@@ -15,6 +15,9 @@ Game::Game()
 
 	this->g_Inventory = std::make_unique<Item_Slot>();
 	this->g_LifeBar = std::make_unique<LifeBar>();
+
+	this->m_NetUpdatePending = false;
+
 }
 
 
@@ -49,7 +52,6 @@ void Game::NetInit()
 			EPlayer currentPlayer = netw::getPlayerByUid(targetUid);
 			if (currentPlayer.uid == targetUid) {
 				this->m_netPlayers.push_back(currentPlayer);
-				std::cout << currentPlayer.name << " added to player list." << std::endl;
 			}
 		}
 	}
@@ -64,36 +66,63 @@ void Game::InitShaders()
 void Game::Update()
 {
 	this->m_PlayerController->Update();
+	for (auto& player : this->m_netPlayersController)
+		player.Update();
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 		this->m_PlayerController->TakeDamage(1);
 	}
 
+	if (this->m_netPlayers.size() > this->m_netPlayersController.size()) 
+		this->m_netPlayersController.push_back(NetPlayer());
+	else 
+		for (auto i = 0; i < this->m_netPlayersController.size(); ++i) 
+			if (this->m_netPlayersController[i].getUid() != this->m_netPlayers[i].uid)
+				this->m_netPlayersController[i].AssignStruct(this->m_netPlayers[i]);
 }
 
 void Game::NetUpdate()
 {
-	if (this->m_netClock.getElapsedTime().asMilliseconds() >= 50) {
-		sf::Packet packet;
-		EPlayer pStruct = this->m_PlayerController->getPlayerStruct();
-		packet << pStruct;
-		netw::sendPacket(packet);
+		this->m_NetUpdatePending = true;
+		if (this->m_netClock.getElapsedTime().asMilliseconds() >= 100) {
+			sf::Packet packet;
+			EPlayer pStruct = this->m_PlayerController->getPlayerStruct();
+			packet << pStruct.packetType << pStruct.posx << pStruct.posy << pStruct.speed << pStruct.isMoving << pStruct.isBehindTile << pStruct.name << pStruct.uid << pStruct.animx << pStruct.animy;
+			netw::sendPacket(packet);
 
-		if (netw::getPacket(this->m_netPacket)) {
-			int packetType = 0xFF;
-			this->m_netPacket >> packetType;
-			if (packetType == PLAYERJOINRESPONSE) {
+			if (netw::getPacket(this->m_netPacket)) {
+				int packetType = 0xFF;
 				EPlayer netpStruct;
-				this->m_netPacket >> netpStruct;
-				this->m_netPlayers.push_back(netpStruct);
+				this->m_netPacket >> netpStruct.packetType >>
+					netpStruct.posx >> netpStruct.posy >> 
+				    netpStruct.speed >> netpStruct.isMoving >> 
+					netpStruct.isBehindTile >> netpStruct.name >>
+					netpStruct.uid  >> netpStruct.animx >> netpStruct.animy;
+
+				packetType = netpStruct.packetType;
+				std::cout << "Received packet : " << netpStruct.packetType << std::endl;
+				if (packetType == PLAYERJOINRESPONSE) {
+					std::cout << netpStruct.uid << " added to player list." << std::endl;
+					this->m_netPlayers.push_back(netpStruct);
+				}
+				else if (packetType == PLAYERUPDATERESPONSE) {
+					if (netpStruct.uid != this->m_PlayerController->getUid()) {
+						for (auto& player : this->m_netPlayersController) {
+							if (player.getUid() == netpStruct.uid) {
+								std::cout << netpStruct.uid << " updated." << std::endl;
+								player.AssignStruct(netpStruct);
+							}
+						}	
+					}
+				}
+
+				this->m_netPacket.clear();
 			}
 
-			this->m_netPacket.clear();
+
+			this->m_NetUpdatePending = false;
+			this->m_netClock.restart();
 		}
-
-
-
-		this->m_netClock.restart();
-	}
 }
 
 
@@ -105,6 +134,8 @@ void Game::Render()
 	this->m_Map->RenderSecondLayer(*this->m_Window.get());
 	
 	this->m_Window->draw(*this->m_PlayerController.get(), &m_LightShader);
+	for (auto& player : this->m_netPlayersController)
+		this->m_Window->draw(player);
 
 	this->m_Map->RenderThirdLayer(*this->m_Window.get());
 

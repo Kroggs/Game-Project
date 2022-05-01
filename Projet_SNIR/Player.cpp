@@ -38,6 +38,7 @@ Player::Player()
 	this->m_PlayerTileChecker.setSize(sf::Vector2f(32, 32));
 
 	this->m_Uid = rand() % 0xFFFFFFFF;
+	std::cout << "MY ID : " << m_Uid << std::endl;
 
 	this->m_Sprite.setPosition(sf::Vector2f(550, 384));
 	this->m_BlackSprite.setPosition(sf::Vector2f(550, 384));
@@ -136,7 +137,7 @@ sf::RectangleShape Player::GetItemGui() const
 EPlayer Player::getPlayerStruct()
 {
 	return EPlayer{
-		static_cast<int>(6),
+		int(6),
 		this->GetPosition().x, this->GetPosition().y,
 		this->m_CurrentSpeed,
 		this->m_IsMoving, this->m_isBehindTile,
@@ -219,6 +220,7 @@ void Player::TakeDamage(const int amount)
 
 void Player::Update()
 {
+	
 	if (this->m_DamageRecieved) {
 		if (this->m_DamageRecieved >= this->m_Health)
 			this->m_IsDead = true;

@@ -2,18 +2,21 @@
 
 #include <SFML/Graphics.hpp>
 #include "map.h"
+#include "eplayer_struct.h"
 
-namespace dir
+namespace ndir
 {
-	enum dir { DOWN, LEFT, RIGHT, UP };
+	enum ndir { nDOWN, nLEFT, nRIGHT, nUP };
 }
 
 class NetPlayer : public sf::Drawable, public sf::Transformable
 {
 public :
 	NetPlayer();
-
+	
 	void Update();
+
+	void AssignStruct(EPlayer eplayer);
 
 	void SetCurrentMapLocation(Map* map);
 	void RenderShadow();
@@ -32,6 +35,8 @@ private :
 	sf::Texture PTexture, PBlackTexture;
 	sf::Vector2i PAnim;
 	sf::RenderWindow* ParentWindow;
+
+	sf::Vector2f Position;
 
 	std::string Username;
 	Map* CurrentMapLocation;

@@ -3,7 +3,7 @@
 #include <iostream>
 
 enum PacketType { PLAYER = 0, PLAYERDC = 1, PLAYERAMOUNT = 2, PLARESPONSE = 3, PLAYERPOS = 4, PLAPOSRESPONSE = 5, PLAYERUPDATE = 6,
-                  PLAYERJOINRESPONSE = 7, GETPLAYERUID = 8, GETPLAYER = 9
+                  PLAYERJOINRESPONSE = 7, GETPLAYERUID = 8, GETPLAYER = 9, PLAYERUPDATERESPONSE = 10
 };
 
 struct Player
@@ -111,6 +111,13 @@ int main()
                                     for (std::vector<Player>::iterator pIt = Clients.begin(); pIt != Clients.end(); ++pIt)
                                         if (pIt->uid == p.uid)
                                             *pIt = p;
+                                    sf::Packet broadcast_pupdate;
+                                    broadcast_pupdate << static_cast<int>(PLAYERUPDATERESPONSE) << p;
+                                    for (std::list<sf::TcpSocket*>::iterator pIt = clients.begin(); pIt != clients.end(); ++pIt) {
+                                        if (pIt != it) {
+                                            reinterpret_cast<sf::TcpSocket&>(**pIt).send(broadcast_pupdate);
+                                        }
+                                    }
                                 }
                                 else if (packetType == GETPLAYERUID) {
                                     int index = 0;

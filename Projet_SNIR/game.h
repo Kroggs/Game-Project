@@ -10,6 +10,7 @@
 #include <memory>
 #include <SFML/Network.hpp>
 #include "eplayer_struct.h"
+#include "netplayer.h"
 
 class Game
 {
@@ -47,9 +48,11 @@ private :
 	sf::Clock m_netClock;
 	sf::Packet m_netPacket;
 	std::vector<EPlayer> m_netPlayers;
+	std::vector<NetPlayer> m_netPlayersController;
 
 	bool m_IsRunning;
 	bool m_IsPaused;
+	bool m_NetUpdatePending; 
 
 	bool m_DebugMode;
 	int m_FrameRateLimit;
