@@ -84,7 +84,7 @@ void Game::Update()
 void Game::NetUpdate()
 {
 		this->m_NetUpdatePending = true;
-		if (this->m_netClock.getElapsedTime().asMilliseconds() >= 100) {
+		if (this->m_netClock.getElapsedTime().asMilliseconds() >= 20) {
 			sf::Packet packet;
 			EPlayer pStruct = this->m_PlayerController->getPlayerStruct();
 			packet << pStruct.packetType << pStruct.posx << pStruct.posy << pStruct.speed << pStruct.isMoving << pStruct.isBehindTile << pStruct.name << pStruct.uid << pStruct.animx << pStruct.animy;
@@ -100,7 +100,7 @@ void Game::NetUpdate()
 					netpStruct.uid  >> netpStruct.animx >> netpStruct.animy;
 
 				packetType = netpStruct.packetType;
-				std::cout << "Received packet : " << netpStruct.packetType << std::endl;
+
 				if (packetType == PLAYERJOINRESPONSE) {
 					std::cout << netpStruct.uid << " added to player list." << std::endl;
 					this->m_netPlayers.push_back(netpStruct);
@@ -109,7 +109,6 @@ void Game::NetUpdate()
 					if (netpStruct.uid != this->m_PlayerController->getUid()) {
 						for (auto& player : this->m_netPlayersController) {
 							if (player.getUid() == netpStruct.uid) {
-								std::cout << netpStruct.uid << " updated." << std::endl;
 								player.AssignStruct(netpStruct);
 							}
 						}	

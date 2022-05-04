@@ -41,6 +41,9 @@ NetPlayer::NetPlayer()
 
 void NetPlayer::AssignStruct(EPlayer eplayer)
 {
+	this->PSprite.setTexture(this->PTexture);
+	this->PBlackSprite.setTexture(this->PBlackTexture);
+
 	this->Position = sf::Vector2f(eplayer.posx, eplayer.posy);
 	this->CurrentSpeed = eplayer.speed;
 	this->IsMoving = eplayer.isMoving;
@@ -53,6 +56,9 @@ void NetPlayer::AssignStruct(EPlayer eplayer)
 
 void NetPlayer::Update()
 {
+	this->PSprite.setPosition(this->Position);
+	this->PBlackSprite.setPosition(this->Position);
+
 	FpsCount += FpsSpeed * Time.restart().asSeconds();
 
 	if (FpsCount >= SwitchFps)

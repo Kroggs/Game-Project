@@ -182,9 +182,9 @@ bool Player::IsColliding()
 	}
 
 	for (unsigned int i = 0; i < CurrentMapInfos.layers; ++i) {
-		int NextTileId = L::SPAWN_LAYER[i][PlayerTileCoords.x + PlayerTileCoords.y * CurrentMapInfos.width] - 2; // tile ID of the tile forward the current player direction
+		int NextTileId = L::SPAWN_LAYER[i][PlayerTileCoords.x + PlayerTileCoords.y * CurrentMapInfos.width] - 2;
 		for (unsigned int j = 0; j < CurrentMapInfos.collidableTiles.size(); j++) {
-			if (NextTileId == CurrentMapInfos.collidableTiles[j]) { // if the tile has collision
+			if (NextTileId == CurrentMapInfos.collidableTiles[j]) {
 				this->m_CollisionChecker.setPosition(sf::Vector2f(PlayerTileCoords.x * 32, PlayerTileCoords.y * 32));
 			}
 		}
@@ -266,19 +266,19 @@ void Player::Update()
 
 	this->m_IsMoving = true;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
 		this->m_Anim.y = dir::UP;
 		this->m_timeSinceLastMove.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
 		this->m_Anim.y = dir::LEFT;
 		this->m_timeSinceLastMove.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
 		this->m_Anim.y = dir::DOWN;
 		this->m_timeSinceLastMove.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
 		this->m_Anim.y = dir::RIGHT;
 		this->m_timeSinceLastMove.restart();
 	}
