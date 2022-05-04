@@ -2,6 +2,7 @@
 
 Text::Text(const std::string text, sf::Vector2f position, unsigned int size, sf::Color fillColor, const int font)
 {
+	this->m_IsVisible = true;
 	this->SetFont(font);
 	this->m_Text.setFont(this->m_Font);
 	this->m_Text.setString(text);
@@ -50,6 +51,12 @@ void Text::SetFont(const int font)
 		this->m_Font.loadFromFile("fonts/Pixer-Regular.ttf");
 		break;
 	}
+}
+
+
+void Text::SetPosition(const sf::Vector2f pos)
+{
+	this->m_Text.setPosition(pos);
 }
 
 void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -266,19 +266,19 @@ void Player::Update()
 
 	this->m_IsMoving = true;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
 		this->m_Anim.y = dir::UP;
 		this->m_timeSinceLastMove.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
 		this->m_Anim.y = dir::LEFT;
 		this->m_timeSinceLastMove.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
 		this->m_Anim.y = dir::DOWN;
 		this->m_timeSinceLastMove.restart();
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
 		this->m_Anim.y = dir::RIGHT;
 		this->m_timeSinceLastMove.restart();
 	}

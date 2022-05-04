@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "map.h"
 #include "eplayer_struct.h"
+#include "text.h"
 
 namespace ndir
 {
@@ -39,6 +40,9 @@ private :
 	sf::Vector2f Position;
 
 	std::string Username;
+	sf::Text TUsername;
+	sf::Font TUsername_Font;
+
 	Map* CurrentMapLocation;
 
 	sf::Clock TimeSinceLastMove;

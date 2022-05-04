@@ -46,9 +46,12 @@ private :
 	std::vector<Item> m_PickupItems;
 
 	sf::Clock m_netClock;
-	sf::Packet m_netPacket;
+	sf::Packet m_netPacket, m_sendPacket;
 	std::vector<EPlayer> m_netPlayers;
 	std::vector<NetPlayer> m_netPlayersController;
+
+	EPlayer m_pStruct, m_netpStruct;
+	int m_inPacketType;
 
 	bool m_IsRunning;
 	bool m_IsPaused;

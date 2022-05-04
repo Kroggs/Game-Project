@@ -85,31 +85,35 @@ void Game::NetUpdate()
 {
 		this->m_NetUpdatePending = true;
 		if (this->m_netClock.getElapsedTime().asMilliseconds() >= 20) {
-			sf::Packet packet;
-			EPlayer pStruct = this->m_PlayerController->getPlayerStruct();
-			packet << pStruct.packetType << pStruct.posx << pStruct.posy << pStruct.speed << pStruct.isMoving << pStruct.isBehindTile << pStruct.name << pStruct.uid << pStruct.animx << pStruct.animy;
-			netw::sendPacket(packet);
+			this->m_sendPacket.clear();
+			this->m_pStruct = this->m_PlayerController->getPlayerStruct();
+			this->m_sendPacket << this->m_pStruct.packetType << 
+				this->m_pStruct.posx << this->m_pStruct.posy <<
+				this->m_pStruct.speed << this->m_pStruct.isMoving <<
+				this->m_pStruct.isBehindTile << this->m_pStruct.name <<
+				this->m_pStruct.uid << this->m_pStruct.animx << this->m_pStruct.animy;
+
+			netw::sendPacket(this->m_sendPacket);
 
 			if (netw::getPacket(this->m_netPacket)) {
-				int packetType = 0xFF;
-				EPlayer netpStruct;
-				this->m_netPacket >> netpStruct.packetType >>
-					netpStruct.posx >> netpStruct.posy >> 
-				    netpStruct.speed >> netpStruct.isMoving >> 
-					netpStruct.isBehindTile >> netpStruct.name >>
-					netpStruct.uid  >> netpStruct.animx >> netpStruct.animy;
+				this->m_inPacketType = 0xFF;
+				this->m_netPacket >> this->m_netpStruct.packetType >>
+					this->m_netpStruct.posx >> this->m_netpStruct.posy >>
+					this->m_netpStruct.speed >> this->m_netpStruct.isMoving >>
+					this->m_netpStruct.isBehindTile >> this->m_netpStruct.name >>
+					this->m_netpStruct.uid  >> this->m_netpStruct.animx >> this->m_netpStruct.animy;
 
-				packetType = netpStruct.packetType;
+				this->m_inPacketType = this->m_netpStruct.packetType;
 
-				if (packetType == PLAYERJOINRESPONSE) {
-					std::cout << netpStruct.uid << " added to player list." << std::endl;
-					this->m_netPlayers.push_back(netpStruct);
+				if (this->m_inPacketType == PLAYERJOINRESPONSE) {
+					std::cout << this->m_netpStruct.uid << " added to player list." << std::endl;
+					this->m_netPlayers.push_back(this->m_netpStruct);
 				}
-				else if (packetType == PLAYERUPDATERESPONSE) {
-					if (netpStruct.uid != this->m_PlayerController->getUid()) {
+				else if (this->m_inPacketType == PLAYERUPDATERESPONSE) {
+					if (this->m_netpStruct.uid != this->m_PlayerController->getUid()) {
 						for (auto& player : this->m_netPlayersController) {
-							if (player.getUid() == netpStruct.uid) {
-								player.AssignStruct(netpStruct);
+							if (player.getUid() == this->m_netpStruct.uid) {
+								player.AssignStruct(this->m_netpStruct);
 							}
 						}	
 					}

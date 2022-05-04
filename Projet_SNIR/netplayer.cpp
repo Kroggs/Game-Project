@@ -37,12 +37,19 @@ NetPlayer::NetPlayer()
 	this->Health = 384;
 	this->DamageReceived = 0;
 
+	this->TUsername_Font.loadFromFile("fonts/Pixer-Regular.ttf");
+	this->TUsername.setFont(this->TUsername_Font);
+	this->TUsername.setString(this->Username);
+	this->TUsername.setCharacterSize(12);
+	this->TUsername.setFillColor(sf::Color::Magenta);
 }
 
 void NetPlayer::AssignStruct(EPlayer eplayer)
 {
 	this->PSprite.setTexture(this->PTexture);
 	this->PBlackSprite.setTexture(this->PBlackTexture);
+
+	this->TUsername.setFont(this->TUsername_Font);
 
 	this->Position = sf::Vector2f(eplayer.posx, eplayer.posy);
 	this->CurrentSpeed = eplayer.speed;
@@ -56,6 +63,8 @@ void NetPlayer::AssignStruct(EPlayer eplayer)
 
 void NetPlayer::Update()
 {
+	this->TUsername.setPosition(sf::Vector2f(this->PSprite.getPosition().x, this->PSprite.getPosition().y - 12));
+
 	this->PSprite.setPosition(this->Position);
 	this->PBlackSprite.setPosition(this->Position);
 
@@ -113,4 +122,5 @@ int NetPlayer::getUid() const
 void NetPlayer::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(this->PSprite);
+	target.draw(this->TUsername);
 }

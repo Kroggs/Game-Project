@@ -12,6 +12,10 @@ public :
 	enum Fonts {Pixer_Regular};
 	enum Fades {IN, OUT};
 
+	Text() {
+		this->m_IsVisible = false;
+	}
+
 	Text(const std::string text, sf::Vector2f position, unsigned int size, sf::Color fillColor, const int font = Pixer_Regular);
 
 	void FadeIn();
@@ -19,6 +23,8 @@ public :
 
 	void SetVisible(const bool visibilty);
 	void SetFont(const int font);
+
+	void SetPosition(const sf::Vector2f pos);
 
 
 private :
